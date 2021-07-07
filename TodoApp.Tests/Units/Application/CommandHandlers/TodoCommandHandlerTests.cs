@@ -132,5 +132,11 @@ namespace TodoApp.Tests.Application.CommandHandlers
             await handler.Handle(command2, CancellationToken.None);
             Assert.True(!context.Todos.Any(b => b.Id == todo.Id));
         }
+
+        [Fact]
+        public async Task DeleteTodoInexistentId()
+        {
+            await Assert.ThrowsAsync<TodoAppException>(() => handler.Handle(new DeleteTodoCommand(Guid.NewGuid()), CancellationToken.None));
+        }
     }
 }
