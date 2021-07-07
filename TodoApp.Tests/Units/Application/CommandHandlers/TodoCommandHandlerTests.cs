@@ -62,6 +62,18 @@ namespace TodoApp.Tests.Application.CommandHandlers
         }
 
         [Fact]
+        public async Task CreateCompletedSameTitleTwice()
+        {
+            var command = new AddTodoCommand("Title", "Description", true);
+            var todo = await handler.Handle(command, CancellationToken.None);
+            Assert.NotNull(todo);
+            Assert.NotEqual(Guid.Empty, todo.Id);
+            Assert.True(todo.Completed);
+            Assert.True(context.Todos.Any(b => b.Id == todo.Id && b.Completed));
+            await Assert.ThrowsAsync<TodoAppException>(() => handler.Handle(command, CancellationToken.None));
+        }
+
+        [Fact]
         public async Task ToggleCompletedTodoSuccess()
         {
             var todo = new Todo("Title", "Description", false);

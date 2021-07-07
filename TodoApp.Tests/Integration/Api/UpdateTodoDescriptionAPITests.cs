@@ -20,6 +20,7 @@ namespace TodoApp.Tests.Integration.Api
         {
             var context = testContext.ServiceProvider.GetService(typeof(TodoContext)) as TodoContext;
             context?.Todos.RemoveRange(context?.Todos.ToList());
+            context?.SaveChanges();
         }
 
         [Fact]

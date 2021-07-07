@@ -19,6 +19,7 @@ namespace TodoApp.Tests.Integration.Api
         {
             var context = testContext.ServiceProvider.GetService(typeof(TodoContext)) as TodoContext;
             context?.Todos.RemoveRange(context?.Todos.ToList());
+            context?.SaveChanges();
         }
 
 
@@ -27,7 +28,7 @@ namespace TodoApp.Tests.Integration.Api
         {
             var payload = new AddTodoPayload
             {
-                Title = "Title",
+                Title = "Title1",
                 Description = "Description",
             };
 

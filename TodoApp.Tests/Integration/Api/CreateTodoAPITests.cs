@@ -18,6 +18,7 @@ namespace TodoApp.Tests.Integration.Api
         {
             var context = testContext.ServiceProvider.GetService(typeof(TodoContext)) as TodoContext;
             context?.Todos.RemoveRange(context?.Todos.ToList());
+            context?.SaveChanges();
         }
 
         [Fact]
@@ -25,7 +26,7 @@ namespace TodoApp.Tests.Integration.Api
         {
             var payload = new AddTodoPayload
             {
-                Title = "Title",
+                Title = "Title1",
                 Description = Guid.NewGuid().ToString()
             };
             var response = await testContext.Post(URL, payload);
@@ -49,7 +50,7 @@ namespace TodoApp.Tests.Integration.Api
         {
             var payload = new AddTodoPayload
             {
-                Title = "Title",
+                Title = "Title2",
                 Description = null
             };
             var response = await testContext.Post(URL, payload);
@@ -61,7 +62,7 @@ namespace TodoApp.Tests.Integration.Api
         {
             var payload = new AddTodoPayload
             {
-                Title = "Title",
+                Title = "Title3",
                 Description = "Description",
                 Completed = false,
             };
@@ -74,7 +75,7 @@ namespace TodoApp.Tests.Integration.Api
         {
             var payload = new AddTodoPayload
             {
-                Title = "Title",
+                Title = "Title4",
                 Description = "Description",
                 Completed = true,
             };

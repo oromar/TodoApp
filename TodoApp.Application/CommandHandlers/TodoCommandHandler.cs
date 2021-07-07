@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TodoApp.Application.Commands;
@@ -25,6 +26,8 @@ namespace TodoApp.Application.CommandHandlers
 
         public async Task<TodoViewModel> Handle(AddTodoCommand request, CancellationToken cancellationToken)
         {
+            var entityInDb = await repository.List(a => a.Title == request.Title);
+            if (entityInDb.Any()) throw new TodoAppException("Todo exists already.");
             var entity = new Todo(request.Title, request.Description, request.Completed);
             entity = await repository.Add(entity);
             return new TodoViewModel
