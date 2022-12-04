@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TodoApp.Api.Common;
-using TodoApp.Application;
+using TodoApp.Infra.Configuration;
 
 namespace TodoApp.Api
 {

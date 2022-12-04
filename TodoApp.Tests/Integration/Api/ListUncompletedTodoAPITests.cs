@@ -33,7 +33,7 @@ namespace TodoApp.Tests.Integration.Api
             var response = await testContext.Post(URL, payload);
             response.EnsureSuccessStatusCode();
 
-            var data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncompleted?page=1&limit=10");
+            var data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncomplete?page=1&limit=10");
             Assert.NotNull(data.Items);
             Assert.Single(data.Items);
             Assert.Equal(payload.Title, data.Items[0].Title);
@@ -56,7 +56,7 @@ namespace TodoApp.Tests.Integration.Api
                 var response = await testContext.Post(URL, payload);
                 response.EnsureSuccessStatusCode();
             }
-            var data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncompleted?page=1&limit=10");
+            var data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncomplete?page=1&limit=10");
             Assert.NotNull(data.Items);
             Assert.Equal(uncompletedItems, data.Total);
             Assert.Equal(uncompletedItems, data.Items.Count);
@@ -78,22 +78,22 @@ namespace TodoApp.Tests.Integration.Api
                 var response = await testContext.Post(URL, payload);
                 response.EnsureSuccessStatusCode();
             }
-            var data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncompleted?page=1&limit=5");
+            var data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncomplete?page=1&limit=5");
             Assert.NotNull(data.Items);
             Assert.Equal(uncompletedItems, data.Total);
             Assert.Equal(5, data.Items.Count);
 
-            data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncompleted?page=2&limit=5");
+            data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncomplete?page=2&limit=5");
             Assert.NotNull(data.Items);
             Assert.Equal(uncompletedItems, data.Total);
             Assert.Equal(5, data.Items.Count);
 
-            data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncompleted?page=3&limit=5");
+            data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncomplete?page=3&limit=5");
             Assert.NotNull(data.Items);
             Assert.Equal(uncompletedItems, data.Total);
             Assert.Equal(5, data.Items.Count);
 
-            data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncompleted?page=4&limit=5");
+            data = await testContext.Get<PaginationViewModel<TodoViewModel>>($"{URL}/uncomplete?page=4&limit=5");
             Assert.NotNull(data.Items);
             Assert.Equal(uncompletedItems, data.Total);
             Assert.Single(data.Items);

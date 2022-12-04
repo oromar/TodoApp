@@ -54,5 +54,10 @@ namespace TodoApp.Infra.Repositories
             await context.SaveChangesAsync();
             return todo;
         }
+
+        public IQueryable<Todo> AsQueryable()
+        {
+            return context.Todos.AsQueryable();
+        }
     }
 }

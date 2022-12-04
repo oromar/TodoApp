@@ -28,7 +28,7 @@ namespace TodoApp.Api.Controllers
         public async Task<ActionResult<TodoViewModel>> Get(IdPayload payload) =>
             Ok(await mediator.Send(new GetTodoByIdQuery(payload.Id)));
 
-        [HttpGet("uncompleted")]
+        [HttpGet("uncomplete")]
         public async Task<ActionResult<PaginationViewModel<TodoViewModel>>> GetUncompleted(PaginationPayload payload) =>
             Ok(await mediator.Send(new GetUncompletedTodosQuery(payload.Page.Value, payload.Limit.Value)));
 

@@ -7,6 +7,7 @@ using TodoApp.Application.Common;
 using TodoApp.Application.Queries;
 using TodoApp.Domain.Entities;
 using TodoApp.Infra.Context;
+using TodoApp.Infra.Repositories;
 using TodoApp.Tests.Common;
 using Xunit;
 
@@ -20,7 +21,8 @@ namespace TodoApp.Tests.Application.QueyHandlers
         public TodoQueryHandlerTests()
         {
             context = ContextFactory.New();
-            handler = new TodosQueryHandler(context);
+            var repository = new TodoRepository(context);
+            handler = new TodosQueryHandler(repository);
         }
 
         [Fact]

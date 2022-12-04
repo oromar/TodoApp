@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,8 +8,8 @@ using TodoApp.Application.Common;
 using TodoApp.Application.Queries;
 using TodoApp.Application.ViewModel;
 using TodoApp.Domain;
+using TodoApp.Domain.Data;
 using TodoApp.Domain.Entities;
-using TodoApp.Infra.Context;
 
 namespace TodoApp.Application.CommandHandlers
 {
@@ -19,17 +18,17 @@ namespace TodoApp.Application.CommandHandlers
         IRequestHandler<GetTodoByIdQuery, TodoViewModel>,
         IRequestHandler<GetUncompletedTodosQuery, PaginationViewModel<TodoViewModel>>
     {
-        private readonly TodoContext context;
+        private readonly ITodoRepository repository;
 
-        public TodosQueryHandler(TodoContext context)
+        public TodosQueryHandler(ITodoRepository repository)
         {
-            this.context = context;
+            this.repository = repository;
         }
 
         public async Task<PaginationViewModel<TodoViewModel>> Handle(GetListTodosQuery request, CancellationToken cancellationToken)
         {
-            var total = context.Todos.Count();
-            var todos = await context.Todos.OrderBy(a => a.CreationDate).Skip(request.Offset).Take(request.Limit).ToListAsync();
+            var total = repository.AsQueryable().Count();
+            var todos = repository.AsQueryable().OrderBy(a => a.CreationDate).Skip(request.Offset).Take(request.Limit).ToList();
             var items = todos.Select(a => new TodoViewModel
             {
                 Id = a.Id,
@@ -45,7 +44,7 @@ namespace TodoApp.Application.CommandHandlers
         public async Task<TodoViewModel> Handle(GetTodoByIdQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Todo, bool>> predicate = a => a.Id == request.Id;
-            var todo = await context.Todos.FirstOrDefaultAsync(predicate);
+            var todo = repository.AsQueryable().FirstOrDefault(predicate);
             if (todo != null)
                 return new TodoViewModel
                 {
@@ -61,8 +60,8 @@ namespace TodoApp.Application.CommandHandlers
         public async Task<PaginationViewModel<TodoViewModel>> Handle(GetUncompletedTodosQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Todo, bool>> predicate = a => !a.Completed;
-            var total = context.Todos.Count(predicate);
-            var todos = await context.Todos.Where(predicate).OrderBy(a => a.CreationDate).Skip(request.Offset).Take(request.Limit).ToListAsync();
+            var total = repository.AsQueryable().Count(predicate);
+            var todos = repository.AsQueryable().Where(predicate).OrderBy(a => a.CreationDate).Skip(request.Offset).Take(request.Limit).ToList();
             var items = todos.Select(a => new TodoViewModel
             {
                 Id = a.Id,

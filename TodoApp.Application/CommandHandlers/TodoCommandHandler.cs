@@ -27,7 +27,7 @@ namespace TodoApp.Application.CommandHandlers
         public async Task<TodoViewModel> Handle(AddTodoCommand request, CancellationToken cancellationToken)
         {
             var entityInDb = await repository.List(a => a.Title == request.Title);
-            if (entityInDb.Any()) throw new TodoAppException("Todo exists already.");
+            if (entityInDb.Any()) throw new TodoAppException("Todo already exists.");
             var entity = new Todo(request.Title, request.Description, request.Completed);
             entity = await repository.Add(entity);
             return new TodoViewModel
