@@ -8,7 +8,7 @@ namespace TodoApp.Infra.Context
         public TodoContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<TodoContext>();
-            optionsBuilder.UseSqlServer("Server=NB411-OLDM\\SQLEXPRESS;Database=TODO-APP;Trusted_Connection=True;MultipleActiveResultSets=True;");
+            optionsBuilder.UseSqlServer(args[1]); //parameter --connection "Connection String Here"
             return new TodoContext(optionsBuilder.Options);
         }
     }
