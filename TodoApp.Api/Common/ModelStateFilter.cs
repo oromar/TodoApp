@@ -9,10 +9,15 @@ namespace TodoApp.Api.Common
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var state = context.ModelState;
-            if (!state.IsValid) 
-                throw new TodoApiException(state.Values.SelectMany(a => a.Errors).FirstOrDefault()?.ErrorMessage);
-            await next();
+            if (context.ModelState.IsValid)
+            {
+                await next();
+            }
+            else
+            {
+                var firstErrorMessage = context.ModelState.Values.SelectMany(a => a.Errors).FirstOrDefault()?.ErrorMessage;
+                throw new TodoApiException(firstErrorMessage);
+            }
         }
     }
 }

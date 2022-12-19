@@ -34,6 +34,10 @@ namespace TodoApp.Api.Controllers
         public async Task<ActionResult<PaginationViewModel<TodoViewModel>>> GetUncompleted(PaginationPayload payload) =>
             Ok(await queries.ListUncomplete(payload.Page, payload.Limit));
 
+        [HttpGet("search")]
+        public async Task<ActionResult<PaginationViewModel<TodoViewModel>>> Search(SearchPayload payload) =>
+            Ok(await queries.Search(payload.Criteria, payload.Page, payload.Limit));
+
         [HttpPost]
         public async Task<ActionResult<TodoViewModel>> Post([FromBody] AddTodoPayload payload) =>
             Created(string.Empty, await handler.Send(new AddTodoCommand(payload.Title, payload.Description, payload.Completed)));
