@@ -12,7 +12,7 @@ namespace TodoApp.Application.Queries
 {
     public class TodoQueriesService : ITodoQueriesService
     {
-        private ITodoRepository repository;
+        private readonly ITodoRepository repository;
         public const int LIMIT_ROWS = 100;
         public TodoQueriesService(ITodoRepository repository)
         {
