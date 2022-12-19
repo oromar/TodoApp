@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TodoApp.Application.CommandHandlers;
+using TodoApp.Application.Queries;
 using TodoApp.Domain.Data;
 using TodoApp.Infra.Context;
+using TodoApp.Infra.Mediator;
 using TodoApp.Infra.Repositories;
 
 namespace TodoApp.Infra.Configuration
@@ -20,6 +22,8 @@ namespace TodoApp.Infra.Configuration
             services.AddMediatR(typeof(TodoCommandHandler).Assembly);
 
             services.AddScoped<ITodoRepository, TodoRepository>();
+            services.AddScoped<ITodoQueriesService, TodoQueriesService>();
+            services.AddScoped<IMediatorHandler, MediatorHandler>();
         }
     }
 }

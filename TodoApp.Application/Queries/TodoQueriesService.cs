@@ -1,34 +1,29 @@
-﻿using MediatR;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 using TodoApp.Application.Common;
-using TodoApp.Application.Queries;
 using TodoApp.Application.ViewModel;
 using TodoApp.Domain;
 using TodoApp.Domain.Data;
 using TodoApp.Domain.Entities;
 
-namespace TodoApp.Application.CommandHandlers
+namespace TodoApp.Application.Queries
 {
-    public class TodosQueryHandler :
-        IRequestHandler<GetListTodosQuery, PaginationViewModel<TodoViewModel>>,
-        IRequestHandler<GetTodoByIdQuery, TodoViewModel>,
-        IRequestHandler<GetUncompletedTodosQuery, PaginationViewModel<TodoViewModel>>
+    public class TodoQueriesService : ITodoQueriesService
     {
-        private readonly ITodoRepository repository;
-
-        public TodosQueryHandler(ITodoRepository repository)
+        private ITodoRepository repository;
+        public const int LIMIT_ROWS = 100;
+        public TodoQueriesService(ITodoRepository repository)
         {
             this.repository = repository;
         }
 
-        public async Task<PaginationViewModel<TodoViewModel>> Handle(GetListTodosQuery request, CancellationToken cancellationToken)
+        public async Task<PaginationViewModel<TodoViewModel>> ListAll(int page, int limit)
         {
+            var offset = (page - 1) * limit;
             var total = repository.AsQueryable().Count();
-            var todos = repository.AsQueryable().OrderBy(a => a.CreationDate).Skip(request.Offset).Take(request.Limit).ToList();
+            var todos = repository.AsQueryable().OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
             var items = todos.Select(a => new TodoViewModel
             {
                 Id = a.Id,
@@ -38,12 +33,12 @@ namespace TodoApp.Application.CommandHandlers
                 CompletedDate = a.Completed ? a.CompletedDate : (DateTime?)null
             })
             .ToList();
-            return new PaginationViewModel<TodoViewModel>(items, total, request.Page, request.Limit);
+            return new PaginationViewModel<TodoViewModel>(items, total, page, limit);
         }
 
-        public async Task<TodoViewModel> Handle(GetTodoByIdQuery request, CancellationToken cancellationToken)
+        public async Task<TodoViewModel> GetById(Guid id)
         {
-            Expression<Func<Todo, bool>> predicate = a => a.Id == request.Id;
+            Expression<Func<Todo, bool>> predicate = a => a.Id == id;
             var todo = repository.AsQueryable().FirstOrDefault(predicate);
             if (todo != null)
                 return new TodoViewModel
@@ -57,11 +52,12 @@ namespace TodoApp.Application.CommandHandlers
             throw new TodoAppException("Todo not found.");
         }
 
-        public async Task<PaginationViewModel<TodoViewModel>> Handle(GetUncompletedTodosQuery request, CancellationToken cancellationToken)
+        public async Task<PaginationViewModel<TodoViewModel>> ListUncomplete(int page, int limit)
         {
+            var offset = (page - 1) * limit;
             Expression<Func<Todo, bool>> predicate = a => !a.Completed;
             var total = repository.AsQueryable().Count(predicate);
-            var todos = repository.AsQueryable().Where(predicate).OrderBy(a => a.CreationDate).Skip(request.Offset).Take(request.Limit).ToList();
+            var todos = repository.AsQueryable().Where(predicate).OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
             var items = todos.Select(a => new TodoViewModel
             {
                 Id = a.Id,
@@ -69,7 +65,7 @@ namespace TodoApp.Application.CommandHandlers
                 Description = a.Description,
             })
             .ToList();
-            return new PaginationViewModel<TodoViewModel>(items, total, request.Page, request.Limit);
+            return new PaginationViewModel<TodoViewModel>(items, total, page, limit);
         }
     }
 }
