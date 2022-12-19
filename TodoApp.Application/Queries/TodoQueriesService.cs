@@ -1,12 +1,19 @@
 using System;
-using System.Threading;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using TodoApp.Application.Common;
+using TodoApp.Application.ViewModel;
+using TodoApp.Domain;
+using TodoApp.Domain.Data;
+using TodoApp.Domain.Entities;
 
 namespace TodoApp.Application.Queries
 {
     public class TodoQueriesService : ITodoQueriesService
     {
         private ITodoRepository repository;
-
+        public const int LIMIT_ROWS = 100;
         public TodoQueriesService(ITodoRepository repository)
         {
             this.repository = repository;
@@ -31,7 +38,7 @@ namespace TodoApp.Application.Queries
 
         public async Task<TodoViewModel> GetById(Guid id)
         {
-            Expression<Func<Todo, bool>> predicate = a => a.Id == request.Id;
+            Expression<Func<Todo, bool>> predicate = a => a.Id == id;
             var todo = repository.AsQueryable().FirstOrDefault(predicate);
             if (todo != null)
                 return new TodoViewModel
@@ -44,10 +51,10 @@ namespace TodoApp.Application.Queries
                 };
             throw new TodoAppException("Todo not found.");
         }
-        
+
         public async Task<PaginationViewModel<TodoViewModel>> ListUncomplete(int page, int limit)
         {
-            var offset = (page -1) * limit;
+            var offset = (page - 1) * limit;
             Expression<Func<Todo, bool>> predicate = a => !a.Completed;
             var total = repository.AsQueryable().Count(predicate);
             var todos = repository.AsQueryable().Where(predicate).OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();

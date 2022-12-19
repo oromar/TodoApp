@@ -7,9 +7,9 @@ namespace TodoApp.Infra.Context
     {
         public TodoContext CreateDbContext(string[] args)
         {
-            var connectionString = args[1]; //--connection 
+            var connectionString = args[1]; //--connection ""
             var optionsBuilder = new DbContextOptionsBuilder<TodoContext>();
-            optionsBuilder.UseSqlServer(connectionString);  
+            optionsBuilder.UseSqlServer(connectionString);
             return new TodoContext(optionsBuilder.Options);
         }
     }

@@ -1,7 +1,9 @@
 using MediatR;
+using System.Threading.Tasks;
+
 namespace TodoApp.Infra.Mediator
 {
-    public class MediatorHandler: IMediatorHandler
+    public class MediatorHandler : IMediatorHandler
     {
 
         private IMediator mediator;
@@ -12,10 +14,10 @@ namespace TodoApp.Infra.Mediator
 
         public async Task Send(IRequest request)
         {
-            return await mediator.Send(request);
+            await mediator.Send(request);
         }
-        
-        public async Task<T> Send(IRequest<T> request)
+
+        public async Task<T> Send<T>(IRequest<T> request)
         {
             return await mediator.Send(request);
         }

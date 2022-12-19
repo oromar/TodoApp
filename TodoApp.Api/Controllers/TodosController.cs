@@ -32,7 +32,7 @@ namespace TodoApp.Api.Controllers
 
         [HttpGet("uncomplete")]
         public async Task<ActionResult<PaginationViewModel<TodoViewModel>>> GetUncompleted(PaginationPayload payload) =>
-            Ok(await queries.GetUncompleted(payload.Page, payload.Limit));
+            Ok(await queries.ListUncomplete(payload.Page, payload.Limit));
 
         [HttpPost]
         public async Task<ActionResult<TodoViewModel>> Post([FromBody] AddTodoPayload payload) =>

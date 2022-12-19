@@ -1,5 +1,7 @@
 using System;
-using System.Threading;
+using System.Threading.Tasks;
+using TodoApp.Application.ViewModel;
+using TodoApp.Domain;
 
 namespace TodoApp.Application.Queries
 {
