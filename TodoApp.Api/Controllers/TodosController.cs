@@ -14,23 +14,25 @@ namespace TodoApp.Api.Controllers
     public class TodosController : ControllerBase
     {
         private readonly IMediatorHandler handler;
+        private readonly ITodoQueriesService queries;
 
-        public TodosController(IMediatorHandler handler)
+        public TodosController(IMediatorHandler handler, ITodoQueriesService queries)
         {
             this.handler = handler;
+            this.queries = queries;
         }
 
         [HttpGet]
         public async Task<ActionResult<PaginationViewModel<TodoViewModel>>> Get(PaginationPayload payload) =>
-            Ok(await handler.Send(new GetListTodosQuery(payload.Page.Value, payload.Limit.Value)));
+            Ok(await queries.ListAll(payload.Page, payload.Limit));
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoViewModel>> Get(IdPayload payload) =>
-            Ok(await handler.Send(new GetTodoByIdQuery(payload.Id)));
+            Ok(await queries.GetById(payload.Id));
 
         [HttpGet("uncomplete")]
         public async Task<ActionResult<PaginationViewModel<TodoViewModel>>> GetUncompleted(PaginationPayload payload) =>
-            Ok(await handler.Send(new GetUncompletedTodosQuery(payload.Page.Value, payload.Limit.Value)));
+            Ok(await queries.GetUncompleted(payload.Page, payload.Limit));
 
         [HttpPost]
         public async Task<ActionResult<TodoViewModel>> Post([FromBody] AddTodoPayload payload) =>

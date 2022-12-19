@@ -20,6 +20,7 @@ namespace TodoApp.Infra.Configuration
             services.AddMediatR(typeof(TodoCommandHandler).Assembly);
 
             services.AddScoped<ITodoRepository, TodoRepository>();
+            services.AddScoped<ITodoQueriesService, TodoQueriesService>();
             services.AddScoped<IMediatorHandler, MediatorHandler>();
         }
     }
