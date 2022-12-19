@@ -12,8 +12,8 @@ namespace TodoApp.Application.Queries
 {
     public class TodoQueriesService : ITodoQueriesService
     {
+        public const int MAX_ROWS_PER_PAGE = 100;
         private readonly ITodoRepository repository;
-        public const int LIMIT_ROWS = 100;
         public TodoQueriesService(ITodoRepository repository)
         {
             this.repository = repository;
@@ -63,6 +63,24 @@ namespace TodoApp.Application.Queries
                 Id = a.Id,
                 Title = a.Title,
                 Description = a.Description,
+            })
+            .ToList();
+            return new PaginationViewModel<TodoViewModel>(items, total, page, limit);
+        }
+
+        public async Task<PaginationViewModel<TodoViewModel>> Search(string criteria, int page, int limit)
+        {
+            var offset = (page - 1) * limit;
+            Expression<Func<Todo, bool>> predicate = a => a.Title.ToLower().Contains(criteria.ToLower()) || a.Description.ToLower().Contains(criteria.ToLower());
+            var total = repository.AsQueryable().Count(predicate);
+            var todos = repository.AsQueryable().OrderBy(a => a.CreationDate).Where(predicate).Skip(offset).Take(limit).ToList();
+            var items = todos.Select(a => new TodoViewModel
+            {
+                Id = a.Id,
+                Title = a.Title,
+                Description = a.Description,
+                Completed = a.Completed,
+                CompletedDate = a.Completed ? a.CompletedDate : (DateTime?)null
             })
             .ToList();
             return new PaginationViewModel<TodoViewModel>(items, total, page, limit);

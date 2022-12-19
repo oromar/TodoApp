@@ -12,7 +12,11 @@ namespace TodoApp.Tests.Units.Application.Queries
             var context = ContextFactory.New();
             var repository = new TodoRepository(context);
             service = new TodoQueriesService(repository);
-
         }
+
+        //list all
+        //list uncompleted
+        //search
+        //get by id
     }
 }
