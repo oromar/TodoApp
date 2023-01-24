@@ -7,13 +7,17 @@ using TodoApp.Domain.Entities;
 
 namespace TodoApp.Domain.Data
 {
-    public interface IRepositoryBase<T> where T : BaseEntity
+    public interface IQueryBase<T> where T : BaseEntity
+    {
+        Task<T> Get(Guid id);
+        Task<List<T>> List(Expression<Func<T, bool>> predicate = null);
+        IQueryable<T> AsQueryable();
+    }
+
+    public interface IRepositoryBase<T> : IQueryBase<T> where T : BaseEntity
     {
         Task<T> Add(T T);
         Task<T> Update(T T);
         Task Remove(Guid id);
-        Task<T> Get(Guid id);
-        Task<List<T>> List(Expression<Func<T, bool>> predicate = null);
-        IQueryable<T> AsQueryable();
     }
 }

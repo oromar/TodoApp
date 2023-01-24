@@ -13,17 +13,17 @@ namespace TodoApp.Application.Queries
     public class TodoQueriesService : ITodoQueriesService
     {
         public const int MAX_ROWS_PER_PAGE = 100;
-        private readonly ITodoRepository repository;
-        public TodoQueriesService(ITodoRepository repository)
+        private readonly ITodoQuery dbQuery;
+        public TodoQueriesService(ITodoQuery dbQuery)
         {
-            this.repository = repository;
+            this.dbQuery = dbQuery;
         }
 
         public async Task<PaginationViewModel<TodoViewModel>> ListAll(int page, int limit)
         {
             var offset = (page - 1) * limit;
-            var total = repository.AsQueryable().Count();
-            var todos = repository.AsQueryable().OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
+            var total = dbQuery.AsQueryable().Count();
+            var todos = dbQuery.AsQueryable().OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
             var items = todos.Select(a => new TodoViewModel
             {
                 Id = a.Id,
@@ -39,7 +39,7 @@ namespace TodoApp.Application.Queries
         public async Task<TodoViewModel> GetById(Guid id)
         {
             Expression<Func<Todo, bool>> predicate = a => a.Id == id;
-            var todo = repository.AsQueryable().FirstOrDefault(predicate);
+            var todo = dbQuery.AsQueryable().FirstOrDefault(predicate);
             if (todo != null)
                 return new TodoViewModel
                 {
@@ -56,8 +56,8 @@ namespace TodoApp.Application.Queries
         {
             var offset = (page - 1) * limit;
             Expression<Func<Todo, bool>> predicate = a => !a.Completed;
-            var total = repository.AsQueryable().Count(predicate);
-            var todos = repository.AsQueryable().Where(predicate).OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
+            var total = dbQuery.AsQueryable().Count(predicate);
+            var todos = dbQuery.AsQueryable().Where(predicate).OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
             var items = todos.Select(a => new TodoViewModel
             {
                 Id = a.Id,
@@ -72,8 +72,8 @@ namespace TodoApp.Application.Queries
         {
             var offset = (page - 1) * limit;
             Expression<Func<Todo, bool>> predicate = a => a.Title.ToLower().Contains(criteria.ToLower()) || a.Description.ToLower().Contains(criteria.ToLower());
-            var total = repository.AsQueryable().Count(predicate);
-            var todos = repository.AsQueryable().OrderBy(a => a.CreationDate).Where(predicate).Skip(offset).Take(limit).ToList();
+            var total = dbQuery.AsQueryable().Count(predicate);
+            var todos = dbQuery.AsQueryable().Where(predicate).OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
             var items = todos.Select(a => new TodoViewModel
             {
                 Id = a.Id,
