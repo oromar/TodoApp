@@ -2,22 +2,15 @@
 using TodoApp.Domain.Common;
 using Xunit;
 
-namespace TodoApp.Tests.Application.Commands
+namespace TodoApp.Tests.Units.Application.Commands
 {
     public class AddTodoCommandTests
     {
         [Fact]
         public void CreateAddTodoCommandSuccess()
         {
-            try
-            {
-                new AddTodoCommand("Title", "Description");
-                Assert.True(true);
-            }
-            catch
-            {
-                Assert.True(false);
-            }
+            var command = new AddTodoCommand("Title", "Description");
+            Assert.NotNull(command);
         }
 
         [Theory]

@@ -1,9 +1,10 @@
 ﻿using System;
 using TodoApp.Domain.Common;
+using TodoApp.Domain.Interfaces;
 
 namespace TodoApp.Domain.Entities
 {
-    public class Todo : BaseEntity
+    public class Todo : BaseEntity, IAggregateRoot
     {
         public const int MAX_LENGTH_TITLE = 30;
         public const int MAX_LENGTH_DESCRIPTION = 100;
@@ -32,23 +33,33 @@ namespace TodoApp.Domain.Entities
         public static void ValidateId(Guid id)
         {
             if (Guid.Empty.Equals(id))
+            {
                 throw new DomainException("Id is required.");
+            }
         }
 
         public static void ValidateTitle(string title)
         {
             if (string.IsNullOrWhiteSpace(title))
+            {
                 throw new DomainException("Title is required.");
+            }
             if (title.Length > MAX_LENGTH_TITLE)
+            {
                 throw new DomainException($"Title should have max {MAX_LENGTH_TITLE} characters.");
+            }
         }
 
         public static void ValidateDescription(string description)
         {
             if (string.IsNullOrWhiteSpace(description))
+            {
                 throw new DomainException("Description is required.");
+            }
             if (description.Length > MAX_LENGTH_DESCRIPTION)
+            {
                 throw new DomainException($"Description should have max {MAX_LENGTH_DESCRIPTION} characters.");
+            }
         }
 
         public Todo ToggleCompleted()

@@ -11,7 +11,7 @@ using TodoApp.Infra.Repositories;
 using TodoApp.Tests.Common;
 using Xunit;
 
-namespace TodoApp.Tests.Application.CommandHandlers
+namespace TodoApp.Tests.Integration.Application.CommandHandlers
 {
     public class TodoCommandHandlerTests
     {
@@ -22,8 +22,7 @@ namespace TodoApp.Tests.Application.CommandHandlers
         public TodoCommandHandlerTests()
         {
             context = ContextFactory.New();
-            repository = new TodoRepository(context);
-            handler = new TodoCommandHandler(repository);
+            handler = new TodoCommandHandler(new TodoRepository(context));
         }
 
         [Fact]

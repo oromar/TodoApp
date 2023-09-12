@@ -1,38 +1,25 @@
 ﻿using System;
+using System.Reflection;
 using TodoApp.Domain.Common;
 using TodoApp.Domain.Entities;
 using Xunit;
 
-namespace TodoApp.Tests.Domain
+namespace TodoApp.Tests.Units.Domain
 {
     public class TodoTests
     {
         [Fact]
         public void CreateSuccess()
         {
-            try
-            {
-                new Todo("Title", "Description");
-                Assert.True(true);
-            }
-            catch
-            {
-                Assert.True(false);
-            }
+            var todo = new Todo("Title", "Description");
+            Assert.NotNull(todo);
         }
 
         [Fact]
         public void CreateEmptySuccess()
         {
-            try
-            {
-                new Todo();
-                Assert.True(true);
-            }
-            catch
-            {
-                Assert.True(false);
-            }
+            var todo = new Todo();
+            Assert.NotNull(todo);
         }
 
         [Fact]
@@ -50,29 +37,15 @@ namespace TodoApp.Tests.Domain
         [Fact]
         public void TryCreateTodoWithTitleMaxChars()
         {
-            try
-            {
-                new Todo(new string('a', Todo.MAX_LENGTH_TITLE), "Description");
-                Assert.True(true);
-            }
-            catch
-            {
-                Assert.True(false);
-            }
+            var todo = new Todo(new string('a', Todo.MAX_LENGTH_TITLE), "Description");
+            Assert.NotNull(todo);
         }
 
         [Fact]
         public void TryCreateTodoWithDescriptionMaxChars()
         {
-            try
-            {
-                new Todo("Title", new string('a', Todo.MAX_LENGTH_DESCRIPTION));
-                Assert.True(true);
-            }
-            catch
-            {
-                Assert.True(false);
-            }
+            var todo = new Todo("Title", new string('a', Todo.MAX_LENGTH_DESCRIPTION));
+            Assert.NotNull(todo);
         }
 
         [Fact]
@@ -90,15 +63,8 @@ namespace TodoApp.Tests.Domain
         [Fact]
         public void TestValidateIdSuccess()
         {
-            try
-            {
-                Todo.ValidateId(Guid.NewGuid());
-                Assert.True(true);
-            }
-            catch
-            {
-                Assert.True(false);
-            }
+            Todo.ValidateId(Guid.NewGuid());
+            Assert.True(true);
         }
 
         [Fact]

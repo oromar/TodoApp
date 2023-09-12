@@ -21,19 +21,7 @@ namespace TodoApp.Application.Queries
 
         public async Task<PaginationViewModel<TodoViewModel>> ListAll(int page, int limit)
         {
-            var offset = (page - 1) * limit;
-            var total = dbQuery.AsQueryable().Count();
-            var todos = dbQuery.AsQueryable().OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
-            var items = todos.Select(a => new TodoViewModel
-            {
-                Id = a.Id,
-                Title = a.Title,
-                Description = a.Description,
-                Completed = a.Completed,
-                CompletedDate = a.Completed ? a.CompletedDate : (DateTime?)null
-            })
-            .ToList();
-            return new PaginationViewModel<TodoViewModel>(items, total, page, limit);
+            return Search(page, limit);
         }
 
         public async Task<TodoViewModel> GetById(Guid id)
@@ -41,46 +29,50 @@ namespace TodoApp.Application.Queries
             Expression<Func<Todo, bool>> predicate = a => a.Id == id;
             var todo = dbQuery.AsQueryable().FirstOrDefault(predicate);
             if (todo != null)
+            {
                 return new TodoViewModel
                 {
                     Id = todo.Id,
                     Title = todo.Title,
                     Description = todo.Description,
                     Completed = todo.Completed,
-                    CompletedDate = todo.Completed ? todo.CompletedDate : (DateTime?)null
+                    CompletedDate = todo.Completed ? todo.CompletedDate : null
                 };
+            }
             throw new TodoAppException("Todo not found.");
         }
 
         public async Task<PaginationViewModel<TodoViewModel>> ListUncomplete(int page, int limit)
         {
-            var offset = (page - 1) * limit;
             Expression<Func<Todo, bool>> predicate = a => !a.Completed;
-            var total = dbQuery.AsQueryable().Count(predicate);
-            var todos = dbQuery.AsQueryable().Where(predicate).OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
-            var items = todos.Select(a => new TodoViewModel
-            {
-                Id = a.Id,
-                Title = a.Title,
-                Description = a.Description,
-            })
-            .ToList();
-            return new PaginationViewModel<TodoViewModel>(items, total, page, limit);
+            return Search(page, limit, predicate);
         }
 
         public async Task<PaginationViewModel<TodoViewModel>> Search(string criteria, int page, int limit)
         {
-            var offset = (page - 1) * limit;
             Expression<Func<Todo, bool>> predicate = a => a.Title.ToLower().Contains(criteria.ToLower()) || a.Description.ToLower().Contains(criteria.ToLower());
-            var total = dbQuery.AsQueryable().Count(predicate);
-            var todos = dbQuery.AsQueryable().Where(predicate).OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
+            return Search(page, limit, predicate);
+        }
+
+        private PaginationViewModel<TodoViewModel> Search(int page, int limit, Expression<Func<Todo, bool>> predicate = null)
+        {
+            var offset = (page - 1) * limit;
+            var queryable = dbQuery.AsQueryable();
+
+            if (predicate != null)
+            {
+                queryable = queryable.Where(predicate);
+            }
+
+            var total = queryable.Count();
+            var todos = queryable.OrderBy(a => a.CreationDate).Skip(offset).Take(limit).ToList();
             var items = todos.Select(a => new TodoViewModel
             {
                 Id = a.Id,
                 Title = a.Title,
                 Description = a.Description,
                 Completed = a.Completed,
-                CompletedDate = a.Completed ? a.CompletedDate : (DateTime?)null
+                CompletedDate = a.Completed ? a.CompletedDate : null
             })
             .ToList();
             return new PaginationViewModel<TodoViewModel>(items, total, page, limit);

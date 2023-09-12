@@ -3,22 +3,15 @@ using TodoApp.Application.Commands;
 using TodoApp.Domain.Common;
 using Xunit;
 
-namespace TodoApp.Tests.Application.Commands
+namespace TodoApp.Tests.Units.Application.Commands
 {
     public class UpdateTodoDescriptionCommandTests
     {
         [Fact]
         public void CreateUpdateTodoDescriptionCommandSuccess()
         {
-            try
-            {
-                new UpdateTodoDescriptionCommand(Guid.NewGuid(), "description");
-                Assert.True(true);
-            }
-            catch
-            {
-                Assert.True(false);
-            }
+            var command = new UpdateTodoDescriptionCommand(Guid.NewGuid(), "description");
+            Assert.NotNull(command);
         }
 
         [Fact]

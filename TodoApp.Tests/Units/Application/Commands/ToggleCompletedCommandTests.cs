@@ -3,22 +3,15 @@ using TodoApp.Application.Commands;
 using TodoApp.Domain.Common;
 using Xunit;
 
-namespace TodoApp.Tests.Application.Commands
+namespace TodoApp.Tests.Units.Application.Commands
 {
     public class ToggleCompletedCommandTests
     {
         [Fact]
         public void CreateToggleCompletedCommandSuccess()
         {
-            try
-            {
-                new ToggleCompletedCommand(Guid.NewGuid());
-                Assert.True(true);
-            }
-            catch
-            {
-                Assert.True(false);
-            }
+            var command = new ToggleCompletedCommand(Guid.NewGuid());
+            Assert.NotNull(command);
         }
 
         [Fact]

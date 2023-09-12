@@ -7,7 +7,7 @@ using TodoApp.Infra.Context;
 using TodoApp.Tests.Common;
 using Xunit;
 
-namespace TodoApp.Tests.Integration.Api
+namespace TodoApp.Tests.e2e.Api
 {
     public class CreateTodoAPITests
     {

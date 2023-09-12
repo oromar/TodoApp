@@ -3,21 +3,15 @@ using TodoApp.Application.Commands;
 using TodoApp.Domain.Common;
 using Xunit;
 
-namespace TodoApp.Tests.Application.Commands
+namespace TodoApp.Tests.Units.Application.Commands
 {
     public class DeleteTodoCommandTests
     {
         [Fact]
         public void CreateDeleteTodoCommandSuccess()
         {
-            try
-            {
-                new DeleteTodoCommand(Guid.NewGuid());
-            }
-            catch
-            {
-                Assert.True(false);
-            }
+            var command = new DeleteTodoCommand(Guid.NewGuid());
+            Assert.NotNull(command);
         }
 
         [Fact]

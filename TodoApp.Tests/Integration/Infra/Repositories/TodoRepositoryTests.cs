@@ -6,7 +6,7 @@ using TodoApp.Infra.Repositories;
 using TodoApp.Tests.Common;
 using Xunit;
 
-namespace TodoApp.Tests.Infra
+namespace TodoApp.Tests.Integration.Infra.Repositories
 {
     public class TodoRepositoryTests
     {

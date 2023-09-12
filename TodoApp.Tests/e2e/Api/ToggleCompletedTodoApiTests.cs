@@ -9,13 +9,13 @@ using TodoApp.Infra.Context;
 using TodoApp.Tests.Common;
 using Xunit;
 
-namespace TodoApp.Tests.Integration.Api
+namespace TodoApp.Tests.e2e.Api
 {
-    public class ToggleCompletedTodoTests
+    public class ToggleCompletedTodoApiTests
     {
         private readonly TestContext testContext = TestContext.Instance;
         private const string URL = "/api/todos";
-        public ToggleCompletedTodoTests()
+        public ToggleCompletedTodoApiTests()
         {
             var context = testContext.ServiceProvider.GetService(typeof(TodoContext)) as TodoContext;
             context?.Todos.RemoveRange(context?.Todos.ToList());
